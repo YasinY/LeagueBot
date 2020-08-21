@@ -10,4 +10,14 @@
       <PackageReference Include="Tesseract-OCR" Version="1.0.4" />
     </ItemGroup>
 
+    <ItemGroup>
+      <None Remove="Resources\dimensions.json" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <EmbeddedResource Include="Resources\Json\Dimensions.json">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </EmbeddedResource>
+    </ItemGroup>
+
 </Project>

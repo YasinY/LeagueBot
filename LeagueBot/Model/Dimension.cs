@@ -7,7 +7,7 @@ namespace LeagueBot.Model
     {
 
 
-        private String dimension;
+        public String dimension;
         
         
         public List<RectanglePosition> Rectangles { get; set; }

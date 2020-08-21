@@ -9,9 +9,9 @@ namespace LeagueBot.Mapper
     public interface IJsonMapper<T> : IMapper<T, string>
     {
         
-        public new T ToSource(string destination)
+        public new T ToSource(string json)
         {
-            return JsonSerializer.Deserialize<T>(destination);
+            return JsonSerializer.Deserialize<T>(json);
         }
 
         public new string ToDestination(T source)

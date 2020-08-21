@@ -48,7 +48,6 @@ namespace LeagueBot.Window
             
             screenBitmap.Save(@"C:\Users\Yasin\screen.png", ImageFormat.Png); //full image
             
-            
                                                                         //x1       y2         x2          y1
             var adBitmap = screenBitmap.Clone(Rectangle.FromLTRB(579, 996, 620, 1010), screenBitmap.PixelFormat);
             adBitmap.Save(@"C:\Users\Yasin\ad.png", ImageFormat.Png); //full image

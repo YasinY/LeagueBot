@@ -1,5 +1,8 @@
 ﻿using System;
+using System.IO;
+using System.Reflection;
 using System.Threading;
+using LeagueBot.Exceptions;
 using LeagueBot.Window.Impl;
 
 namespace LeagueBot
@@ -23,6 +26,7 @@ namespace LeagueBot
                 null,
                 1000,
                 1000);
+
 
             Console.ReadLine();
         }

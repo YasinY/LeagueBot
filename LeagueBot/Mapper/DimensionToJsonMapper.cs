@@ -6,9 +6,9 @@ namespace LeagueBot.Mapper
     public class DimensionToJsonMapper : IJsonMapper<Model.Dimension>
     {
      
-        public Model.Dimension ToSource(string destination)
+        public Model.Dimension ToSource(string json)
         {
-            return JsonSerializer.Deserialize<Model.Dimension>(destination);
+            return JsonSerializer.Deserialize<Model.Dimension>(json);
         }
 
         public string ToDestination(Model.Dimension source)
