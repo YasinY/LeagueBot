@@ -1,0 +1,16 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LeagueBot", "LeagueBot\LeagueBot.csproj", "{EC26C6C4-F1FE-4816-949B-BDF8B8AE2B74}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{EC26C6C4-F1FE-4816-949B-BDF8B8AE2B74}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EC26C6C4-F1FE-4816-949B-BDF8B8AE2B74}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EC26C6C4-F1FE-4816-949B-BDF8B8AE2B74}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EC26C6C4-F1FE-4816-949B-BDF8B8AE2B74}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
