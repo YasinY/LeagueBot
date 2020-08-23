@@ -20,9 +20,8 @@ namespace LeagueBot.Loader
 
             using var reader = new StreamReader(stream);
             var jsonFile = reader.ReadToEnd(); //Make string equal to full file
-            Console.WriteLine(jsonFile);
 
-            return "";
+            return jsonFile;
         }
     }
 }

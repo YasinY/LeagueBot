@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.Linq;
 using LeagueBot.Capture;
+using LeagueBot.Dimension;
 using LeagueBot.Exceptions;
 
 namespace LeagueBot.Window
@@ -46,11 +47,12 @@ namespace LeagueBot.Window
             var graphics = Graphics.FromImage(screenBitmap);
             graphics.CopyFromScreen(rectangle.Left, rectangle.Top, 0, 0, screenBitmap.Size, CopyPixelOperation.SourceCopy);
             
-            screenBitmap.Save(@"C:\Users\Yasin\screen.png", ImageFormat.Png); //full image
-            
-                                                                        //x1       y2         x2          y1
+            //screenBitmap.Save(@"C:\Users\Yasin\screen.png", ImageFormat.Png); //full image
+            DimensionFactory factory = new DimensionFactory();
+            var rectanglePositions = factory.Produce(rectangle.Width, rectangle.Height);
+            //x1       y2         x2          y1
             var adBitmap = screenBitmap.Clone(Rectangle.FromLTRB(579, 996, 620, 1010), screenBitmap.PixelFormat);
-            adBitmap.Save(@"C:\Users\Yasin\ad.png", ImageFormat.Png); //full image
+           // adBitmap.Save(@"C:\Users\Yasin\ad.png", ImageFormat.Png); //full image
             graphics.Dispose();
             //TODO create 3 methods with different CopyFromScreen values
             return screenBitmap;

@@ -1,17 +1,22 @@
-﻿using System;
+﻿using System.Collections.Generic;
 using System.Text.Json;
+using System.Text.Json.Serialization;
+using LeagueBot.Dimension;
+using LeagueBot.Json;
 
 namespace LeagueBot.Mapper
 {
-    public class DimensionToJsonMapper : IJsonMapper<Model.Dimension>
+    public class DimensionToJsonMapper : IMapper<List<DimensionModel>, string>
     {
-     
-        public Model.Dimension ToSource(string json)
+        public List<DimensionModel> ToSource(string json)
         {
-            return JsonSerializer.Deserialize<Model.Dimension>(json);
+            var serializeOptions = new JsonSerializerOptions();
+            serializeOptions.Converters.Add(new RectanglePositionJsonConverter());
+            serializeOptions.WriteIndented = true;
+            return JsonSerializer.Deserialize<List<DimensionModel>>(json, serializeOptions);
         }
 
-        public string ToDestination(Model.Dimension source)
+        public string ToDestination(List<DimensionModel> source)
         {
             return JsonSerializer.Serialize(source);
         }

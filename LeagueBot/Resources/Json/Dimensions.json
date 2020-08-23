@@ -1,12 +1,16 @@
 ﻿[
   {
-    "dimension": "1920x1080",
-    "rectangles": [
-      {
-        "identifier": "ad",
-        "x1": 579,
-        "y2": 996
-      }
-    ]
+   "1920x1080": [
+     {
+       "identifier": "ad",
+       "x1": 579,
+       "y2": 996
+     },
+     {
+       "identifier": "ap",
+       "x1": 579,
+       "y2": 996
+     }
+   ]
   }
 ]
