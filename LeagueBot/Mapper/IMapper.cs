@@ -3,7 +3,7 @@
     public interface IMapper<T, TD>
     {
 
-        public T ToSource(TD json);
+        public T ToSource(TD rectangle);
 
         public TD ToDestination(T source);
         

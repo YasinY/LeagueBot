@@ -16,13 +16,13 @@ namespace LeagueBot.Json
             var positionX1 = position.X1;
             if (positionX1 != default && position.X2 == default)
             {
-               position.X2 = Math.Abs(positionX1 - 41);
+               position.X2 = position.CalculateX2();
             }
 
             var positionY2 = position.Y2;
             if (positionY2 != default && position.Y1 == default) 
             {
-                position.Y1 = Math.Abs(positionY2 - 14);
+                position.Y1 = position.CalculateY1();
             }
 
             return position;

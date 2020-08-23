@@ -8,12 +8,12 @@ namespace LeagueBot.Mapper
 {
     public class DimensionToJsonMapper : IMapper<List<DimensionModel>, string>
     {
-        public List<DimensionModel> ToSource(string json)
+        public List<DimensionModel> ToSource(string rectangle)
         {
             var serializeOptions = new JsonSerializerOptions();
             serializeOptions.Converters.Add(new RectanglePositionJsonConverter());
             serializeOptions.WriteIndented = true;
-            return JsonSerializer.Deserialize<List<DimensionModel>>(json, serializeOptions);
+            return JsonSerializer.Deserialize<List<DimensionModel>>(rectangle, serializeOptions);
         }
 
         public string ToDestination(List<DimensionModel> source)
