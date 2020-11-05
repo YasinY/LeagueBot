@@ -14,6 +14,8 @@ namespace LeagueBot.Window
 {
     public abstract class BaseWindow
     {
+        private Rectangle _rectangle;
+
         private string ProcessName { get; }
 
         private Process Process { get; set; }
@@ -21,10 +23,28 @@ namespace LeagueBot.Window
         private IntPtr MainWindowHandlePointer { get; set; }
 
 
+        private int RectangleWidth { get; set; }
+
+        private int RectangleHeight { get; set; }
+
+        private Dictionary<string, RectanglePosition> RectanglePositions { get; set; }
+
+
         public BaseWindow(string processName)
         {
             ProcessName = processName;
             AssignProcess();
+            ToFront();
+            AssignRectangleData();
+        }
+
+        private void AssignRectangleData()
+        {
+            _rectangle = new Rectangle();
+            WindowCapture.GetWindowRect(MainWindowHandlePointer, ref _rectangle);
+            RectangleWidth = _rectangle.Width;
+            RectangleHeight = _rectangle.Height;
+            RectanglePositions = new DimensionFactory().Produce(RectangleWidth, RectangleHeight);
         }
 
         private void AssignProcess()
@@ -38,7 +58,6 @@ namespace LeagueBot.Window
             {
                 Console.Error.WriteLine($"Could not find process");
             }
-            
         }
 
         private Process RetrieveProcess()
@@ -55,47 +74,41 @@ namespace LeagueBot.Window
 
         public Bitmap Capture()
         {
-            ToFront();
-            var rectangle = new Rectangle();
-            WindowCapture.GetWindowRect(MainWindowHandlePointer, ref rectangle);
-            var rectangleWidth = rectangle.Width;
-            var rectangleHeight = rectangle.Height;
-            
-            if (rectangleWidth <= 20 || rectangleHeight <= 20)
+            if (RectangleWidth <= 20 || RectangleHeight <= 20)
             {
-                throw new PossibleOutOfBoundsException(rectangleWidth, rectangleHeight);
+                throw new PossibleOutOfBoundsException(RectangleWidth, RectangleHeight);
             }
 
-            //whole screen
-            var screenBitmap = new Bitmap(rectangleWidth, rectangleHeight, PixelFormat.Format32bppArgb);
+            var screenBitmap = new Bitmap(RectangleWidth, RectangleHeight, PixelFormat.Format32bppArgb);
             var graphics = Graphics.FromImage(screenBitmap);
-
-            graphics.CopyFromScreen(rectangle.Left, rectangle.Top, 0, 0, screenBitmap.Size,
+            graphics.CopyFromScreen(_rectangle.Left, _rectangle.Top, 0, 0, screenBitmap.Size,
                 CopyPixelOperation.SourceCopy);
-            //screenBitmap.Save(@"C:\Users\Yasin\screen.png", ImageFormat.Png); //full image
 
-            DimensionFactory factory = new DimensionFactory();
-            var rectanglePositions = factory.Produce(rectangleWidth, rectangleHeight);
-            RectanglePositionToRectangleMapper rectangleMapper = new RectanglePositionToRectangleMapper();
-            //x1       y2         x2          y1
-            var adBitmap = GetAdBitmap(rectangleMapper, rectanglePositions, screenBitmap);
-            var adBitmap2 = screenBitmap.Clone(Rectangle.FromLTRB(579, 996, 620, 1010), screenBitmap.PixelFormat);
-            adBitmap.Save(@"C:\Users\Yasin\ad.png", ImageFormat.Png); //full image
+            var adBitmap = GetBitmap("ad", screenBitmap);
+            var apBitmap = GetBitmap("ap", screenBitmap);
+
+            adBitmap.Save(@"C:\Users\Yasin\ad.png", ImageFormat.Png);
+            apBitmap.Save(@"C:\Users\Yasin\ap.png", ImageFormat.Png);
             graphics.Dispose();
-            //TODO create 3 methods with different CopyFromScreen values
             return screenBitmap;
         }
 
-        private Bitmap GetAdBitmap(RectanglePositionToRectangleMapper rectangleMapper,
-            Dictionary<string, RectanglePosition> rectanglePositions,
-            Bitmap screenBitmap)
+
+        private Bitmap GetBitmap(string modifier, Bitmap screenBitmap)
         {
-            var rectangleF = rectangleMapper.ToDestination(rectanglePositions["ad"]);
-            var adBitmap = screenBitmap.Clone(rectangleF, screenBitmap.PixelFormat);
-            return adBitmap;
+            var rectangleMapper = new RectanglePositionToRectangleMapper();
+            if (!RectanglePositions.ContainsKey(modifier))
+            {
+                return new Bitmap(0, 0);
+            }
+
+            var rectangleF = rectangleMapper.ToDestination(RectanglePositions[modifier]);
+            var bitMap = screenBitmap.Clone(rectangleF, screenBitmap.PixelFormat);
+
+            return bitMap;
         }
 
-        public bool ToFront()
+        private bool ToFront()
         {
             //TODO figure out why using lambda here throws warning lol
             foreach (var process in Process.GetProcesses())

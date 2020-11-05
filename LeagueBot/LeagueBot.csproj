@@ -15,13 +15,9 @@
     </ItemGroup>
 
     <ItemGroup>
-      <EmbeddedResource Include="Resources\Json\Dimensions.json">
+      <EmbeddedResource Include="Resources\Json\IngameClientData.json">
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       </EmbeddedResource>
-    </ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="Loader" />
     </ItemGroup>
 
 </Project>
