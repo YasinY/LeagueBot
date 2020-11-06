@@ -4,9 +4,8 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Linq;
-using LeagueBot.Capture;
-using LeagueBot.Dimension;
 using LeagueBot.Exceptions;
+using LeagueBot.Helpers.Capture;
 using LeagueBot.Mapper;
 using LeagueBot.Model;
 
@@ -16,18 +15,19 @@ namespace LeagueBot.Window
     {
         private Rectangle _rectangle;
 
-        private string ProcessName { get; }
+        protected Bitmap ActiveScreenBitmap { get; set; }
 
-        private Process Process { get; set; }
+        protected string ProcessName { get; }
 
-        private IntPtr MainWindowHandlePointer { get; set; }
+        protected Process Process { get; set; }
 
+        protected IntPtr MainWindowHandlePointer { get; set; }
 
-        private int RectangleWidth { get; set; }
+        protected int RectangleWidth { get; set; }
 
-        private int RectangleHeight { get; set; }
+        protected int RectangleHeight { get; set; }
 
-        private Dictionary<string, RectanglePosition> RectanglePositions { get; set; }
+        protected Dictionary<string, RectanglePosition> RectanglePositions { get; set; }
 
 
         public BaseWindow(string processName)
@@ -38,14 +38,6 @@ namespace LeagueBot.Window
             AssignRectangleData();
         }
 
-        private void AssignRectangleData()
-        {
-            _rectangle = new Rectangle();
-            WindowCapture.GetWindowRect(MainWindowHandlePointer, ref _rectangle);
-            RectangleWidth = _rectangle.Width;
-            RectangleHeight = _rectangle.Height;
-            RectanglePositions = new DimensionFactory().Produce(RectangleWidth, RectangleHeight);
-        }
 
         private void AssignProcess()
         {
@@ -54,58 +46,10 @@ namespace LeagueBot.Window
                 Process = RetrieveProcess(); //find first occurence
                 MainWindowHandlePointer = Process.MainWindowHandle;
             }
-            catch (ProcessNotFoundException exception)
+            catch (ProcessNotFoundException)
             {
-                Console.Error.WriteLine($"Could not find process");
+                Console.Error.WriteLine($"Could not find process.");
             }
-        }
-
-        private Process RetrieveProcess()
-        {
-            var processesByName = Process.GetProcessesByName(ProcessName);
-            if (processesByName.Length > 0)
-            {
-                return processesByName.First();
-            }
-
-            throw new ProcessNotFoundException(ProcessName);
-        }
-
-
-        public Bitmap Capture()
-        {
-            if (RectangleWidth <= 20 || RectangleHeight <= 20)
-            {
-                throw new PossibleOutOfBoundsException(RectangleWidth, RectangleHeight);
-            }
-
-            var screenBitmap = new Bitmap(RectangleWidth, RectangleHeight, PixelFormat.Format32bppArgb);
-            var graphics = Graphics.FromImage(screenBitmap);
-            graphics.CopyFromScreen(_rectangle.Left, _rectangle.Top, 0, 0, screenBitmap.Size,
-                CopyPixelOperation.SourceCopy);
-
-            var adBitmap = GetBitmap("ad", screenBitmap);
-            var apBitmap = GetBitmap("ap", screenBitmap);
-
-            adBitmap.Save(@"C:\Users\Yasin\ad.png", ImageFormat.Png);
-            apBitmap.Save(@"C:\Users\Yasin\ap.png", ImageFormat.Png);
-            graphics.Dispose();
-            return screenBitmap;
-        }
-
-
-        private Bitmap GetBitmap(string modifier, Bitmap screenBitmap)
-        {
-            var rectangleMapper = new RectanglePositionToRectangleMapper();
-            if (!RectanglePositions.ContainsKey(modifier))
-            {
-                return new Bitmap(0, 0);
-            }
-
-            var rectangleF = rectangleMapper.ToDestination(RectanglePositions[modifier]);
-            var bitMap = screenBitmap.Clone(rectangleF, screenBitmap.PixelFormat);
-
-            return bitMap;
         }
 
         private bool ToFront()
@@ -124,6 +68,74 @@ namespace LeagueBot.Window
             }
 
             return false;
+        }
+
+        private void AssignRectangleData()
+        {
+            _rectangle = new Rectangle();
+            WindowCapture.GetWindowRect(MainWindowHandlePointer, ref _rectangle);
+            RectangleWidth = _rectangle.Width;
+            RectangleHeight = _rectangle.Height;
+            InitialiseBitmap();
+        }
+
+        private void InitialiseBitmap()
+        {
+            ActiveScreenBitmap = new Bitmap(
+                RectangleWidth,
+                RectangleHeight,
+                PixelFormat.Format32bppArgb
+            );
+        }
+
+        private Process RetrieveProcess()
+        {
+            var processesByName = Process.GetProcessesByName(ProcessName);
+            if (processesByName.Length > 0)
+            {
+                return processesByName.First();
+            }
+
+            throw new ProcessNotFoundException(ProcessName);
+        }
+
+        public void Capture()
+        {
+            var correctWindow = WindowCapture.GetForegroundWindow() == MainWindowHandlePointer;
+            if (!correctWindow)
+            {
+                Console.WriteLine("Focused window is not handle. Please focus " + ProcessName);
+                return;
+            }
+
+            if (RectangleWidth <= 20 || RectangleHeight <= 20)
+            {
+                throw new PossibleOutOfBoundsException(RectangleWidth, RectangleHeight);
+            }
+
+            using var graphics = Graphics.FromImage(ActiveScreenBitmap);
+            graphics.CopyFromScreen(
+                _rectangle.Left,
+                _rectangle.Top,
+                0,
+                0,
+                ActiveScreenBitmap.Size,
+                CopyPixelOperation.SourceCopy
+            );
+        }
+
+        public Bitmap GetBitmap(string modifier, Bitmap screenBitmap)
+        {
+            var rectangleMapper = new RectanglePositionToRectangleMapper();
+            if (!RectanglePositions.ContainsKey(modifier))
+            {
+                return new Bitmap(0, 0);
+            }
+
+            var rectangleF = rectangleMapper.ToDestination(RectanglePositions[modifier]);
+            var bitMap = screenBitmap.Clone(rectangleF, screenBitmap.PixelFormat);
+
+            return bitMap;
         }
     }
 }

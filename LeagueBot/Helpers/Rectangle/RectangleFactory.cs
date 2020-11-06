@@ -2,20 +2,20 @@
 using System.Collections.Generic;
 using System.Linq;
 using LeagueBot.Exceptions;
-using LeagueBot.Loader;
+using LeagueBot.Json;
 using LeagueBot.Mapper;
 using LeagueBot.Model;
 
-namespace LeagueBot.Dimension
+namespace LeagueBot.Helpers.Rectangle
 {
-    public class DimensionFactory
+    public class RectangleFactory
     {
-        public List<DimensionModel> Data { get; set; }
+        public List<RectanglePositionsModel> Data { get; set; }
 
 
-        public DimensionFactory()
+        public RectangleFactory(RectanglePositionType type)
         {
-            var json = JsonLoader.ReadJson("IngameClientData");
+            var json = JsonLoader.ReadJson(type.ToString());
             Data = new DimensionToJsonMapper().ToSource(json);
         }
 

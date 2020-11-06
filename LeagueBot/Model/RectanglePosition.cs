@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Text.Json.Serialization;
-using LeagueBot.Json;
-using LeagueBot.Loader;
 
 namespace LeagueBot.Model
 { //TODO unfortunately c# doesnt have extension variable support *yet*

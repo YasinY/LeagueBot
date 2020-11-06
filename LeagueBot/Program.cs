@@ -17,11 +17,14 @@ namespace LeagueBot
                               " / /___/  __// /_/ /  / /_/ / / /_/ / /  __/        / /_/ / / /_/ // /_  \n" +
                               "/_____/\\___/ \\__,_/   \\__, /  \\__,_/  \\___/        /_____/  \\____/ \\__/  \n" +
                               "                     /____/                                              ");
+            var ingameClient = new IngameClient();
+            
             var timer = new Timer(
                 delegate
                 {
-                    Console.Write("Tick! ");
-                    var capture = new IngameClient().Capture();
+                    Console.Write("Tick!");
+                    ingameClient.Capture();
+                    ingameClient.SaveBitMap();
                 },
                 null,
                 1000,

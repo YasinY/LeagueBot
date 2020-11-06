@@ -3,7 +3,7 @@ using System.IO;
 using System.Reflection;
 using LeagueBot.Exceptions;
 
-namespace LeagueBot.Loader
+namespace LeagueBot.Json
 {
     public class JsonLoader
     {

@@ -2,7 +2,7 @@
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 
-namespace LeagueBot.Capture
+namespace LeagueBot.Helpers.Capture
 {
     public class WindowOptions
     {
