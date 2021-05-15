@@ -47,9 +47,9 @@ namespace LeagueBot.Window
                 Process = RetrieveProcess(); //find first occurence
                 MainWindowHandlePointer = Process.MainWindowHandle;
             }
-            catch (ProcessNotFoundException)
+            catch (ProcessNotFoundException e)
             {
-                Console.Error.WriteLine($"Could not find process.");
+                Console.Error.WriteLine(e.Message);
                 ExitHandler.ExitSystem(ExitCode.ProcessNotFound);
                 
             }
