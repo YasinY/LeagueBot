@@ -8,6 +8,7 @@ using LeagueBot.Exceptions;
 using LeagueBot.Helpers.Capture;
 using LeagueBot.Mapper;
 using LeagueBot.Model;
+using LeagueBot.Termination;
 
 namespace LeagueBot.Window
 {
@@ -49,6 +50,8 @@ namespace LeagueBot.Window
             catch (ProcessNotFoundException)
             {
                 Console.Error.WriteLine($"Could not find process.");
+                ExitHandler.ExitSystem(ExitCode.ProcessNotFound);
+                
             }
         }
 
@@ -74,6 +77,10 @@ namespace LeagueBot.Window
         {
             _rectangle = new Rectangle();
             WindowCapture.GetWindowRect(MainWindowHandlePointer, ref _rectangle);
+            if (_rectangle.Width < 0 || _rectangle.Height < 0)
+            {
+                throw new InvalidRectangleException();
+            }
             RectangleWidth = _rectangle.Width;
             RectangleHeight = _rectangle.Height;
             InitialiseBitmap();
